@@ -48,12 +48,24 @@ fileSelector.addEventListener("change", async () => {
       }).quantity += 1;
     }
   }
+
+  searchesPerQuery.sort((a, b) => {
+    return a.quantity - b.quantity;
+  });
+
+  searchesPerQuery = searchesPerQuery.slice(
+    searchesPerQuery.length - 21,
+    searchesPerQuery.length
+  );
+
   console.log(searchesPerQuery);
+
+  // https://www.d3-graph-gallery.com/graph/barplot_horizontal.html
 
   // set the dimensions and margins of the graph
   const margin = { top: 20, right: 30, bottom: 40, left: 90 },
     width = 460 - margin.left - margin.right,
-    height = 14000 - margin.top - margin.bottom;
+    height = 1000 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   const svg = d3
