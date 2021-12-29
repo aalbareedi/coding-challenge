@@ -49,12 +49,55 @@ fileSelector.addEventListener("change", async () => {
     }
   }
   console.log(searchesPerQuery);
+
+  // set the dimensions and margins of the graph
+  const margin = { top: 20, right: 30, bottom: 40, left: 90 },
+    width = 460 - margin.left - margin.right,
+    height = 14000 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  const svg = d3
+    .select("#barChart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  // Add X axis
+  const x = d3.scaleLinear().domain([0, 200]).range([0, width]);
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+  // Y axis
+  const y = d3
+    .scaleBand()
+    .range([0, height])
+    .domain(searchesPerQuery.map((d) => d.query))
+    .padding(0.1);
+  svg.append("g").call(d3.axisLeft(y));
+
+  //Bars
+  svg
+    .selectAll("myRect")
+    .data(searchesPerQuery)
+    .join("rect")
+    .attr("x", x(0))
+    .attr("y", (d) => y(d.query))
+    .attr("width", (d) => x(d.quantity))
+    .attr("height", y.bandwidth())
+    .attr("fill", "#69b3a2");
 });
 
 /*
 searchesPerQuery:
 [
-  { query: brewery, quantity: 1 }
+  { query: brewery, quantity: 1 },
   { query: chicago, quantity: 1 }
 ]
 */
