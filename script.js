@@ -8,12 +8,12 @@ fileSelector.addEventListener("change", async () => {
   let contents = await file.text();
   // console.log(contents);
 
-  // TODO: Count the number of searches per query,
-  // and put the totals in a new array.
-
   // Converting the file contents to an array of objects
   let searches = d3.csvParse(contents);
   let searchesPerQuery = [];
+
+  // TODO: Count the number of searches per query,
+  // and put the totals in a new array.
 
   // 1. Loop through searches
   // 2. Check if this search has a new query value
@@ -41,7 +41,11 @@ fileSelector.addEventListener("change", async () => {
       }) == null
     ) {
       // a. Add an object to searchesPerQuery
-      searchesPerQuery.push({ query: searches[i].query, quantity: 1 });
+      searchesPerQuery.push({
+        query: searches[i].query,
+        hits: searches[i].hits, // Keep the hits
+        quantity: 1,
+      });
     } else {
       searchesPerQuery.find((x) => {
         return x.query == searches[i].query;
@@ -49,23 +53,38 @@ fileSelector.addEventListener("change", async () => {
     }
   }
 
+  /*
+  searchesPerQuery:
+  [
+    { query: brewery, quantity: 3, hits: 25 },
+    { query: chicago, quantity: 2, hits: 13 },
+    { query: restaurant, quantity: 1, hits: 100 }
+  ]
+  */
+
+  // Make a new array containing the searches with 0 hits
+  let zeroHitSearches = searchesPerQuery.filter((x) => {
+    return x.hits == 0;
+  });
+  console.log(zeroHitSearches);
+
   searchesPerQuery.sort((a, b) => {
     return a.quantity - b.quantity;
   });
 
-  searchesPerQuery = searchesPerQuery.slice(
-    searchesPerQuery.length - 21,
+  let topSearches = searchesPerQuery.slice(
+    searchesPerQuery.length - 20,
     searchesPerQuery.length
   );
 
-  console.log(searchesPerQuery);
+  //console.log(searchesPerQuery);
 
   // https://www.d3-graph-gallery.com/graph/barplot_horizontal.html
 
   // set the dimensions and margins of the graph
   const margin = { top: 20, right: 30, bottom: 40, left: 90 },
     width = 460 - margin.left - margin.right,
-    height = 1000 - margin.top - margin.bottom;
+    height = 500 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   const svg = d3
@@ -77,7 +96,7 @@ fileSelector.addEventListener("change", async () => {
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   // Add X axis
-  const x = d3.scaleLinear().domain([0, 200]).range([0, width]);
+  const x = d3.scaleLinear().domain([0, 140]).range([0, width]);
   svg
     .append("g")
     .attr("transform", `translate(0, ${height})`)
@@ -90,26 +109,49 @@ fileSelector.addEventListener("change", async () => {
   const y = d3
     .scaleBand()
     .range([0, height])
-    .domain(searchesPerQuery.map((d) => d.query))
+    .domain(topSearches.map((d) => d.query))
     .padding(0.1);
   svg.append("g").call(d3.axisLeft(y));
 
   //Bars
   svg
     .selectAll("myRect")
-    .data(searchesPerQuery)
+    .data(topSearches)
     .join("rect")
     .attr("x", x(0))
     .attr("y", (d) => y(d.query))
     .attr("width", (d) => x(d.quantity))
     .attr("height", y.bandwidth())
     .attr("fill", "#69b3a2");
-});
 
-/*
-searchesPerQuery:
-[
-  { query: brewery, quantity: 1 },
-  { query: chicago, quantity: 1 }
-]
-*/
+  // 1. Add a table tag, with headings
+  // 2. For each of the zeroHitSearches...
+  // a. Add a tr tag to the table
+  // b. Add a td tag for each column (query and quantity)
+
+  /*
+    <table>
+      <thead>
+        <tr>
+          <td>Search Term</td>
+          <td>Quantity</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>brewery</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>chicago</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>italian</td>
+          <td>17</td>
+        </tr>
+      </tbody>
+    </table>
+  */
+});
