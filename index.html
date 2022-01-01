@@ -15,12 +15,17 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
-    <label>Select file</label>
-    <input type="file" id="fileSelector" />
-
+    <nav></nav>
+    <h1>Select a CSV file to analyze</h1>
+    <div class="inputWrapper">
+      <label class="fileInputLabel">
+        Select a file... <span>Browse</span>
+        <input type="file" id="fileSelector" />
+      </label>
+    </div>
     <div id="barChart"></div>
 
-    <div id="zeroHitsTable"></div>
+    <div id="zeroHitsWrapper"></div>
 
     <script src="script.js"></script>
   </body>

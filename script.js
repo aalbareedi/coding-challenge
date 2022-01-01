@@ -1,12 +1,12 @@
 let fileSelector = document.querySelector("#fileSelector");
-let pieChart = document.querySelector("#pieChart");
+let barChart = document.querySelector("#barChart");
+let zeroHitsWrapper = document.querySelector("#zeroHitsWrapper");
 
 fileSelector.addEventListener("change", async () => {
   // Getting the file object from files array
   let file = fileSelector.files[0];
   // Getting the file contents
   let contents = await file.text();
-  // console.log(contents);
 
   // Converting the file contents to an array of objects
   let searches = d3.csvParse(contents);
@@ -66,9 +66,14 @@ fileSelector.addEventListener("change", async () => {
   let zeroHitSearches = searchesPerQuery.filter((x) => {
     return x.hits == 0;
   });
-  console.log(zeroHitSearches);
+
+  zeroHitSearches.sort((a, b) => {
+    // Descending
+    return b.quantity - a.quantity;
+  });
 
   searchesPerQuery.sort((a, b) => {
+    // Ascending
     return a.quantity - b.quantity;
   });
 
@@ -77,57 +82,92 @@ fileSelector.addEventListener("change", async () => {
     searchesPerQuery.length
   );
 
-  //console.log(searchesPerQuery);
+  addBarChart();
 
-  // https://www.d3-graph-gallery.com/graph/barplot_horizontal.html
+  function addBarChart() {
+    // https://www.d3-graph-gallery.com/graph/barplot_horizontal.html
 
-  // set the dimensions and margins of the graph
-  const margin = { top: 20, right: 30, bottom: 40, left: 90 },
-    width = 460 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    // set the dimensions and margins of the graph
+    const margin = { top: 20, right: 30, bottom: 40, left: 150 },
+      width = 414 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+    let scale = window.innerWidth / 414;
+    if (scale > 2) scale = 2;
 
-  // append the svg object to the body of the page
-  const svg = d3
-    .select("#barChart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    barChart.style.transform = `scale(${scale})`;
+    barChart.style.marginTop = `${window.innerWidth / 3}px`;
+    barChart.style.marginBottom = `${window.innerWidth / 3}px`;
+    barChart.innerHTML = `<div>Top 20 searches</div>`;
 
-  // Add X axis
-  const x = d3.scaleLinear().domain([0, 140]).range([0, width]);
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
-    .attr("transform", "translate(-10,0)rotate(-45)")
-    .style("text-anchor", "end");
+    // append the svg object to the body of the page
+    const svg = d3
+      .select("#barChart")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  // Y axis
-  const y = d3
-    .scaleBand()
-    .range([0, height])
-    .domain(topSearches.map((d) => d.query))
-    .padding(0.1);
-  svg.append("g").call(d3.axisLeft(y));
+    // Add X axis
+    const x = d3.scaleLinear().domain([0, 130]).range([0, width]);
+    svg
+      .append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
-  //Bars
-  svg
-    .selectAll("myRect")
-    .data(topSearches)
-    .join("rect")
-    .attr("x", x(0))
-    .attr("y", (d) => y(d.query))
-    .attr("width", (d) => x(d.quantity))
-    .attr("height", y.bandwidth())
-    .attr("fill", "#69b3a2");
+    // Y axis
+    const y = d3
+      .scaleBand()
+      .range([0, height])
+      .domain(topSearches.map((d) => d.query))
+      .padding(0.1);
+    svg.append("g").call(d3.axisLeft(y));
 
-  // 1. Add a table tag, with headings
+    //Bars
+    svg
+      .selectAll("myRect")
+      .data(topSearches)
+      .join("rect")
+      .attr("x", x(0))
+      .attr("y", (d) => y(d.query))
+      .attr("width", (d) => {
+        return x(d.quantity);
+      })
+      .attr("height", y.bandwidth())
+      .attr("fill", "#69b3a2");
+  }
+
+  // 1. Add a table tag, with headers
   // 2. For each of the zeroHitSearches...
   // a. Add a tr tag to the table
   // b. Add a td tag for each column (query and quantity)
+
+  zeroHitsWrapper.innerHTML = `
+    <div>Searches with zero hits</div>
+    <table>
+      <thead>
+        <tr>
+          <td>Search Term</td>
+          <td>Quantity</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  `;
+
+  let tbody = zeroHitsWrapper.querySelector("tbody");
+
+  for (let i = 0; i < zeroHitSearches.length; i++) {
+    tbody.innerHTML += `
+      <tr>
+        <td>${zeroHitSearches[i].query}</td>
+        <td>${zeroHitSearches[i].quantity}</td>
+      </tr>
+    `;
+  }
 
   /*
     <table>

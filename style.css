@@ -1,1 +1,84 @@
-/* No CSS *//*# sourceMappingURL=style.css.map */
+nav {
+  height: 66px;
+  background: #258834;
+  margin-bottom: 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.inputWrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.fileInputLabel {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+
+.fileInputLabel > span {
+  padding: 10px;
+  border-left: 1px solid #ccc;
+  background: #ccc;
+  margin-left: 10px;
+}
+
+.fileInputLabel > input {
+  display: none;
+}
+
+#barChart {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#barChart svg {
+  max-width: 100vw;
+  -webkit-transform: scale(calc(100vw / 414px));
+          transform: scale(calc(100vw / 414px));
+}
+
+#zeroHitsWrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+table {
+  border: 1px solid gray;
+}
+/*# sourceMappingURL=style.css.map */
