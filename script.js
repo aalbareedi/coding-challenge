@@ -97,7 +97,7 @@ fileSelector.addEventListener("change", async () => {
     barChart.style.transform = `scale(${scale})`;
     barChart.style.marginTop = `${window.innerWidth / 3}px`;
     barChart.style.marginBottom = `${window.innerWidth / 3}px`;
-    barChart.innerHTML = `<div>Top 20 searches</div>`;
+    barChart.innerHTML = `<h1>Top 20 searches</h1>`;
 
     // append the svg object to the body of the page
     const svg = d3
@@ -146,7 +146,7 @@ fileSelector.addEventListener("change", async () => {
   // b. Add a td tag for each column (query and quantity)
 
   zeroHitsWrapper.innerHTML = `
-    <div>Searches with zero hits</div>
+    <h1>Searches with zero hits</h1>
     <table>
       <thead>
         <tr>

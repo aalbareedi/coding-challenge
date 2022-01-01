@@ -1,7 +1,19 @@
 nav {
+  position: relative;
   height: 66px;
   background: #258834;
   margin-bottom: 30px;
+}
+
+nav > button {
+  background: gray;
+  position: absolute;
+  right: 0px;
+  border: none;
+  height: 100%;
+  width: 66px;
+  font-size: 28px;
+  cursor: pointer;
 }
 
 h1 {
@@ -27,13 +39,14 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 3px;
   padding-left: 10px;
+  cursor: pointer;
 }
 
 .fileInputLabel > span {
   padding: 10px;
   border-left: 1px solid #ccc;
   background: #ccc;
-  margin-left: 10px;
+  margin-left: 30px;
 }
 
 .fileInputLabel > input {
@@ -79,6 +92,12 @@ h1 {
 }
 
 table {
-  border: 1px solid gray;
+  border: 1px solid silver;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+thead td {
+  font-weight: bold;
 }
 /*# sourceMappingURL=style.css.map */
